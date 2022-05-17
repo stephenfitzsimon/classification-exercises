@@ -26,9 +26,16 @@ def prep_titanic(df):
     col_to_drop = ['Unnamed: 0','embarked', 'class', 'passenger_id', 'deck']
     df = df.drop(columns=col_to_drop)
     df['embark_town'] = df.embark_town.fillna(value='Southampton')
+    df = df.dropna()
     dummy_df = pd.get_dummies(df[['sex', 'embark_town']], dummy_na = False, drop_first = [True, True])
     df = pd.concat([df, dummy_df], axis = 1)
     return df.drop(columns=['sex', 'embark_town'])
+
+def split_titanic_data(df):
+    df = prep_titanic(df)
+    train, test = train_test_split(df, train_size = 0.8, stratify = df.survived)
+    train, validate = train_test_split(train, train_size = 0.7, stratify = train.survived)
+    return train, test, validate
 
 def prep_telco(df):
     df.drop(columns = ['internet_service_type_id', 'contract_type_id', 'payment_type_id', 'Unnamed: 0'], inplace=True)
