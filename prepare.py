@@ -6,7 +6,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
 
 def prep_iris(df):
-    df.drop(columns = ['species_id', 'measurement_id', 'Unnamed: 0'], inplace = True)
+    df.drop(columns = ['species_id', 'measurement_id'], inplace = True)
+    if 'Unnamed: 0' in list(df.columns):
+        df.drop(columns = ['Unnamed: 0'], inplace=True)
     df.rename(columns = {'species_name':'species'}, inplace=True)
     dummy_df = pd.get_dummies(df[['species']], dummy_na=False, drop_first=True)
     df = pd.concat([df, dummy_df], axis = 1)
@@ -38,7 +40,9 @@ def split_titanic_data(df):
     return train, test, validate
 
 def prep_telco(df):
-    df.drop(columns = ['internet_service_type_id', 'contract_type_id', 'payment_type_id', 'Unnamed: 0'], inplace=True)
+    df.drop(columns = ['internet_service_type_id', 'contract_type_id', 'payment_type_id'], inplace=True)
+    if 'Unnamed: 0' in list(df.columns):
+        df.drop(columns = ['Unnamed: 0'], inplace=True)
     cat_cols = list(df.select_dtypes('object').iloc[:,1:].columns)
     cat_cols.remove('total_charges') #this data column will need to be changed to floatdummy_df = pd.get_dummies(telco[cat_cols], dummy_na = False, drop_first = True)
     dummy_df = pd.get_dummies(df[cat_cols], dummy_na = False, drop_first = True)
